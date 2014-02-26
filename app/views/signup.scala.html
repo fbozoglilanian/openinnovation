@@ -1,0 +1,15 @@
+@(userForm: Form[controllers.Application.UserSignup])
+
+@import helper._
+
+@main("Sign Up") {
+    <h2>Sign up</h2>
+    @helper.form(action = routes.Application.newUser) {
+        
+        @helper.inputText(userForm("email"), '_label -> "eMail")
+        @helper.inputPassword(userForm("password"), '_label -> "Password")
+        @helper.inputPassword(userForm("passwordConfirm"), '_label -> "Confirm your password")
+        
+        <button type="submit" id="signupButton">Create</button>
+    }
+}

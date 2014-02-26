@@ -15,10 +15,20 @@ class IntegrationSpec extends Specification {
   "Application" should {
 
     "work from within a browser" in new WithBrowser {
-
-      browser.goTo("http://localhost:" + port)
-
+      
+       browser.goTo("http://localhost:" + port)
       browser.pageSource must contain("Your new application is ready.")
+
+      browser.goTo("http://localhost:" + port + "/signup")
+
+      browser.$("#email").text("sample@sample.com")
+      browser.$("#password").text("secret111")
+      browser.$("#passwordConfirm").text("secret111")
+      browser.$("#signupButton").click()
+      browser.pageSource must contain("Welcome: sample@sample.com")
+
+      
+      
     }
   }
 }
