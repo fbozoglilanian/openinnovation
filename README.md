@@ -11,7 +11,9 @@ Getting started with Play for Scala: http://www.playframework.com/documentation/
 Intructions:
 
 1 - Install Scala 2.9+, Play2 and SBT
+
 2 - Clone the project with: git clone https://github.com/fbozoglilanian/openinnovation.git
+
 3 - Run: play run
 
 To run the automated tests run:
