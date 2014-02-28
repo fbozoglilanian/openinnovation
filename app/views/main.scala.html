@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, user: Option[User])(content: Html)
 
 <!DOCTYPE html>
 
@@ -14,7 +14,16 @@
             <li><a href="/">Home</a></li>
         </ul>
         <ul id="account-menu" class="menu">
-            <li><a href="/signup">Sign Up</a></li>
+            @user match {
+                case None => {
+                    <li><a href="/login">Sign In</a></li> 
+                    <li><a href="/signup">Sign Up</a></li>
+                }
+                case Some(u) => { 
+                    <li><a href="/">Welcome: @u.email</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                }
+            }
         </ul>
         @content
     </body>

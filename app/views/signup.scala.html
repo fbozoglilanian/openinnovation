@@ -2,9 +2,15 @@
 
 @import helper._
 
-@main("Sign Up") {
+@main("Sign Up", None) {
     <h2>Sign up</h2>
     @helper.form(action = routes.Application.newUser) {
+        
+        @userForm.globalError.map { error =>
+           <p class="error">
+               @error.message
+           </p>
+       }
         
         @helper.inputText(userForm("email"), '_label -> "eMail")
         @helper.inputPassword(userForm("password"), '_label -> "Password")
