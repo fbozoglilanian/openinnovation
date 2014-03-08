@@ -42,5 +42,29 @@ class IntegrationSpec extends Specification {
       browser.$("#loginbutton").click()
       browser.pageSource must contain("Welcome to Open Innovation.")
     }
+    
+    
+    "allow authenticated users to create a new challenge" in new WithBrowser {
+      browser.goTo("http://localhost:" + port + "/signup")
+
+      browser.$("#email").text("sample@sample.com")
+      browser.$("#password").text("secret111")
+      browser.$("#passwordConfirm").text("secret111")
+      browser.$("#signupButton").click()
+      browser.pageSource must contain("Welcome: sample@sample.com")
+      
+      browser.goTo("http://localhost:" + port + "/challenges/add")
+      browser.$("#challenge").text("How do I Scale this?")
+      browser.$("#motivation").text("This is a test challenge motivation.")
+      browser.$("#addButton").click()
+      browser.pageSource must contain("How do I Scale this?")
+      
+    }
+    
   }
+  
+  
 }
+  
+  
+

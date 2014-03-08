@@ -1,0 +1,18 @@
+@(challenge: Option[Challenge], user: Option[User])
+
+@import helper._
+
+@main("Challenge", user) {
+    @challenge match {
+        case None =>{<p class="error">Challenge not found</p>}
+        case Some(challenge) => {
+            <h1>@challenge.challenge</h1>
+		    <p>@challenge.motivation</p>
+		    <div>@challenge.creator match {
+		        case None => { @print("Unknown") } 
+		        case Some(user) =>{ @user.email}
+		        }
+		        </div>
+        }
+    }
+}

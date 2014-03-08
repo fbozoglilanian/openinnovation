@@ -1,10 +1,10 @@
+
+
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
-import play.api.db.evolutions.Evolutions
-import play.api.db.evolutions.Evolution
 
 /**
  * Add your spec here.
@@ -40,6 +40,7 @@ class ApplicationSpec extends Specification {
         models.User.add("pp@pp.com", "Open#NoV4T10")
 
         models.User.getByEmail("pp@pp.com") must not(beNone)
+        models.User.getUserById(1) must not(beNone)
       }
     }
   }
