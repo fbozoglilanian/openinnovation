@@ -15,10 +15,56 @@ class IntegrationSpec extends Specification {
   "Application" should {
 
     "work from within a browser" in new WithBrowser {
-
       browser.goTo("http://localhost:" + port)
-
-      browser.pageSource must contain("Your new application is ready.")
+      browser.pageSource must contain("Welcome to Open Innovation.")
     }
+
+    "allow users to login" in new WithBrowser {
+      browser.goTo("http://localhost:" + port + "/signup")
+
+      browser.$("#email").text("sample@sample.com")
+      browser.$("#password").text("secret111")
+      browser.$("#passwordConfirm").text("secret111")
+      browser.$("#signupButton").click()
+      browser.pageSource must contain("Welcome: sample@sample.com")
+      
+      browser.goTo("http://localhost:" + port + "/logout")
+
+      browser.goTo("http://localhost:" + port + "/login")
+      browser.$("#email").text("sample@sample.com")
+      browser.$("#password").text("secret112")
+      browser.$("#loginbutton").click()
+      browser.pageSource must contain("Invalid email or password")
+
+      
+      browser.$("#email").text("sample@sample.com")
+      browser.$("#password").text("secret111")
+      browser.$("#loginbutton").click()
+      browser.pageSource must contain("Welcome to Open Innovation.")
+    }
+    
+    
+    "allow authenticated users to create a new challenge" in new WithBrowser {
+      browser.goTo("http://localhost:" + port + "/signup")
+
+      browser.$("#email").text("sample@sample.com")
+      browser.$("#password").text("secret111")
+      browser.$("#passwordConfirm").text("secret111")
+      browser.$("#signupButton").click()
+      browser.pageSource must contain("Welcome: sample@sample.com")
+      
+      browser.goTo("http://localhost:" + port + "/challenges/add")
+      browser.$("#challenge").text("How do I Scale this?")
+      browser.$("#motivation").text("This is a test challenge motivation.")
+      browser.$("#addButton").click()
+      browser.pageSource must contain("How do I Scale this?")
+      
+    }
+    
   }
+  
+  
 }
+  
+  
+

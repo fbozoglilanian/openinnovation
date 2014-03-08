@@ -1,0 +1,20 @@
+@(challengeForm: Form[(String, String)], user: Option[User])
+
+@import helper._
+
+@main("New Challenge", user) {
+    <h1>New Challenge</h1>
+    @helper.form(action = routes.Challenges.saveChallenge) {
+        
+        @challengeForm.globalError.map { error =>
+           <p class="error">
+               @error.message
+           </p>
+       }
+        
+        @helper.inputText(challengeForm("challenge"), '_label -> "Challenge")
+        @helper.textarea(challengeForm("motivation"), '_label -> "Motivation/Description")
+        
+        <button type="submit" id="addButton">Create</button>
+    }
+}

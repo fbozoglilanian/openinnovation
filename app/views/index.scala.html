@@ -1,7 +1,7 @@
-@(message: String)
+@(message: String, user: Option[User])
 
-@main("Welcome to Play") {
-
-    @play20.welcome(message)
+@main("Open Innovation", user) {
+    <h1>Welcome to Open Innovation</h1>
+    <p>@message</p>
 
 }
