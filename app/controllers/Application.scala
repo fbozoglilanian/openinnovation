@@ -6,7 +6,7 @@ import play.api.data._
 import play.api.data.Forms._
 import models.User
 
-object Application extends Controller {
+object Application extends Controller with Secured{
 
   case class UserSignup(email: String, password: String, passwordConfirm: String)
 
@@ -23,12 +23,7 @@ object Application extends Controller {
 
   def index = Action {
     implicit request =>
-      Ok(views.html.index("Welcome to Open Innovation.",
-        session.get("email").map { email =>
-          User.getByEmail(email)
-        }.getOrElse {
-          None
-        }))
+      Ok(views.html.index("Welcome to Open Innovation.", GetLogedUser(request)))
   }
 
   def signup = Action {
@@ -80,3 +75,34 @@ object Application extends Controller {
   }
 
 }
+
+trait Secured {
+
+  /**
+   * Retrieve the connected user email.
+   */
+  private def username(request: RequestHeader) = request.session.get("email")
+
+  /**
+   * Redirect to login if the user in not authorized.
+   */
+  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login)
+
+  // --
+
+  /**
+   * Action for authenticated users.
+   */
+  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) { user =>
+    Action(request => f(user)(request))
+  }
+
+  def GetLogedUser(request: Request[AnyContent]): Option[User] = {
+      request.session.get("email").map { email =>
+        User.getByEmail(email)
+      }.getOrElse {
+        None
+      }
+  }
+}
+
