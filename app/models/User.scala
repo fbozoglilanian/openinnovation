@@ -6,7 +6,10 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
+import org.mindrot.jbcrypt.BCrypt
+
 case class User(id: Option[Long], email: String)
+case class SecuredUser(id: Long, email: String, password: String)
 
 object User {
 
@@ -14,6 +17,14 @@ object User {
     get[Long]("user.user_id") ~
     get[String]("user.email") map {
       case id ~ email => User(Some(id), email)
+    }
+  }
+  
+  val SecuredUserParse = {
+    get[Long]("user.user_id") ~
+    get[String]("user.email") ~
+    get[String]("user.password") map {
+      case id ~ email ~ password => SecuredUser(id, email, password)
     }
   }
 
@@ -27,7 +38,7 @@ object User {
           )
         """).on(
           'email -> email,
-          'password -> password).executeInsert()
+          'password -> BCrypt.hashpw(password, BCrypt.gensalt(12))).executeInsert()
 
     }  match {
         case Some(id) => Some(new User(Some(id), email)) // The Primary Key
@@ -57,10 +68,15 @@ object User {
       SQL(
         """
          select * from user where 
-         email = {email} and password = {password}
+         email = {email}
         """).on(
-          'email -> email,
-          'password -> password).as(User.userParse.singleOpt)
+          'email -> email).as(User.SecuredUserParse.singleOpt) match {
+            case Some(securedUser) => BCrypt.checkpw(password, securedUser.password) match {
+              case true => getUserById(securedUser.id)
+              case false => None
+            }
+            case None => None
+          }
     }
   }
 
